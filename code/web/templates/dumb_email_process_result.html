@@ -1,0 +1,27 @@
+    <!-- Card Panel -->
+    <div class="bg-white rounded-xl shadow-lg p-6 w-[300px] flex-shrink-0 flex flex-col items-center">
+
+      <div class="w-full text-sm text-gray-700 space-y-2">
+        <div class="flex justify-between border-b border-gray-200 pb-1">
+          <span>Spam type</span><span>Account</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-200 pb-1">
+          <span>Body length</span><span>{{result.body_length}}</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-200 pb-1">
+          <span>Spam words</span><span>{{result.suspicious_words}}</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-200 pb-1">
+          <span>Sentiment terms</span><span>{{result.sentiment_terms}}</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-200 pb-1">
+          <span>Links</span><span>{{result.number_of_url}}</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-200 pb-1">
+          <span>Emojis</span><span>{{result.emoji_count}}</span>
+        </div>
+
+      </div>
+
+<!--      <p class="text-xs text-gray-400 mt-4">* We recommend using plain text</p>-->
+    </div>
