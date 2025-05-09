@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spam Email Detection</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans p-6 flex flex-col items-center">
+  <h2>
+  </h2>
+  <header class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-gray-800">Spam Email Detection</h1>
+    <!-- <p class="text-gray-500 mt-2 text-sm">Hakuna matata</p> -->
+  </header>
+
+  <div class="flex flex-wrap justify-center gap-8 w-full max-w-6xl">
+
+    <!-- Form Box -->
+    <div class="bg-white p-8 rounded-xl shadow-lg flex-1 min-w-[360px]">
+<form method="post" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+  <div class="md:col-span-2 space-y-4">
+    <input
+      type="text"
+      name="subject"
+      placeholder="Email Subject"
+      value="{{ subject }}"
+      class="w-full border border-gray-300 rounded-md p-3 text-sm"
+    >
+    <textarea
+      name="body"
+      rows="15"
+      placeholder="Email Body"
+      class="w-full border border-gray-300 rounded-md p-3 text-sm resize-vertical"
+    >{{ body }}</textarea>
+  </div>
+
+  <div class="flex flex-col justify-between space-y-4">
+    <!--  -->
+    <fieldset>
+      <legend class="text-base font-medium text-gray-900 mb-2">Select a model</legend>
+      <div class="space-y-4">
+<label class="relative block bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-3 cursor-pointer flex items-start hover:border-blue-500">
+  <input
+    type="radio"
+    name="model_type"
+    value="huggingface1"
+    {% if model_type == 'huggingface1' or not model_type %}checked{% endif %}
+    class="h-5 w-5 mt-1 text-blue-600 focus:ring-blue-500 border-gray-300"
+  >
+  <div class="ml-3 text-sm">
+    <p class="font-medium text-gray-900 flex items-center">
+      <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face Logo" class="inline h-5 w-5 mr-1">
+      HuggingFace Model
+    </p>
+    <p class="text-gray-500">
+      Using
+      <a
+        href="https://huggingface.co/dima806/email-spam-detection-roberta"
+        target="_blank"
+        class="text-blue-600 hover:underline hover:text-blue-800 transition"
+      >
+        dima806/email-spam-detection-roberta
+      </a>
+    </p>
+  </div>
+</label>
+
+        <label class="relative block bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-3 cursor-pointer flex items-start hover:border-blue-500">
+          <input
+            type="radio"
+            name="model_type"
+            value="dumb"
+            {% if model_type == 'dumb' %}checked{% endif %}
+            class="h-5 w-5 mt-1 text-blue-600 focus:ring-blue-500 border-gray-300"
+          >
+          <div class="ml-3 text-sm">
+            <p class="font-medium text-gray-900 flex items-center">🧪 Dumb Rule Checker</p>
+            <p class="text-gray-500">Simple heuristic rule check</p>
+          </div>
+        </label>
+      </div>
+    </fieldset>
+
+    <!--  -->
+    <button
+      type="submit"
+      class="w-full bg-blue-600 text-white text-base font-semibold py-3 rounded-md hover:bg-blue-700 transition"
+    >
+      Detect
+    </button>
+  </div>
+</form>
+
+
+<!--      {% if result %}-->
+<!--        <p class="text-center text-lg font-bold text-gray-700 mt-6">{{ result }}</p>-->
+<!--      {% endif %}-->
+    </div>
+  {% if result %}
+    {% if result.type == 'DumbCheckResult' %}
+      {% include 'dumb_email_process_result.html' %}
+    {% elif result.type == 'dima806/email-spam-detection-roberta' %}
+      {% include 'huggingfacemodel1_result.html' %}
+    {% endif %}
+  {% endif %}
+
+  </div>
+
+</body>
+</html>
