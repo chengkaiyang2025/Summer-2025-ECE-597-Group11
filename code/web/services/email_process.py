@@ -5,7 +5,8 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import torch.nn.functional as F
 
-from models.check_result import DumbCheckResult, Jinji2Response, HuggingFaceModelResult1
+from models.check_result import DumbCheckResult, Jinji2Response, HuggingFaceModelResult1, LogisticRegressionResult
+from models.spam_logistic_regression import PredictLogisticRegression
 from settings import HUGGING_FACE_MODEL_1_PATH
 
 logger = logging.getLogger(__name__)
@@ -77,3 +78,19 @@ class DumbEmailProcessTemplate(EmailProcessTemplate):
 
     def process(self, body:str, subject:str) -> Jinji2Response:
         return self.__dumb_process__(body,subject)
+
+class LogisticRegressionProcess(EmailProcessTemplate):
+    model_name = "logistic-regression"
+    def __init__(self):
+        super().__init__()
+        self.p = PredictLogisticRegression()
+    pass
+
+    def process(self, body:str, subject:str) -> Jinji2Response:
+        result = self.p.predict_with_logistic_regression(body,subject)
+        predicted_label = result['prediction'].values[0]
+        confidence = result['probability'].values[0]
+        response = LogisticRegressionResult(predicted_label,confidence)
+
+        return response
+

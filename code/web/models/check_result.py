@@ -22,6 +22,22 @@ https://huggingface.co/dima806/email-spam-detection-roberta
     def __str__(self):
         return f"predicted_label: {self.predicted_label}, confidence: {self.confidence}"
 
+class LogisticRegressionResult(Jinji2Response):
+    """
+    The process result of a spam model on Hugging face:
+https://huggingface.co/dima806/email-spam-detection-roberta
+
+    """
+    type = "logistic-regression"
+
+
+    def __init__(self,predicted_label,confidence):
+        self.predicted_label = predicted_label
+        self.confidence = f"{confidence:.2%}"
+
+    def __str__(self):
+        return f"predicted_label: {self.predicted_label}, confidence: {self.confidence}"
+
 
 class DumbCheckResult(Jinji2Response):
     type = "DumbCheckResult"
