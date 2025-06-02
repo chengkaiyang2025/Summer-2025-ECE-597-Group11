@@ -1,0 +1,14 @@
+non_latin_count
+non_latin_distinct_count
+emoji_count
+emoji_distinct_count
+spam_word_count
+spam_word_ratio
+has_spam_word
+has_link
+has_email
+has_number
+has_dollar
+has_emoji
+text_length
+word_count

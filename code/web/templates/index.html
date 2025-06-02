@@ -76,8 +76,22 @@
             class="h-5 w-5 mt-1 text-blue-600 focus:ring-blue-500 border-gray-300"
           >
           <div class="ml-3 text-sm">
-            <p class="font-medium text-gray-900 flex items-center">🧪 Dumb Rule Checker</p>
+            <p class="font-medium text-gray-900 flex items-center">🐻 Dumb Rule Checker</p>
             <p class="text-gray-500">Simple heuristic rule check</p>
+          </div>
+        </label>
+
+                <label class="relative block bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-3 cursor-pointer flex items-start hover:border-blue-500">
+          <input
+            type="radio"
+            name="model_type"
+            value="logistic-regression"
+            {% if model_type == 'logistic-regression' %}checked{% endif %}
+            class="h-5 w-5 mt-1 text-blue-600 focus:ring-blue-500 border-gray-300"
+          >
+          <div class="ml-3 text-sm">
+            <p class="font-medium text-gray-900 flex items-center">🚀  Logistic Regression</p>
+            <p class="text-gray-500">The classical Logistic Regression powered by MADS</p>
           </div>
         </label>
       </div>
@@ -103,6 +117,8 @@
       {% include 'dumb_email_process_result.html' %}
     {% elif result.type == 'dima806/email-spam-detection-roberta' %}
       {% include 'huggingfacemodel1_result.html' %}
+    {% elif result.type == 'logistic-regression' %}
+      {% include 'logistic_regression.html' %}
     {% endif %}
   {% endif %}
 

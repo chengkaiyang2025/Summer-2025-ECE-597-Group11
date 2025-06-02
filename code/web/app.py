@@ -10,7 +10,7 @@ logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
-from services.model_loader import d1, h1
+from services.model_loader import d1, h1, p1
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -29,6 +29,8 @@ def index():
             result = h1.process(body, subject)
         elif model_type == 'dumb':
             result = d1.process(body, subject)
+        elif model_type == 'logistic-regression':
+            result = p1.process(body, subject)
         print(result)
 
     return render_template('index.html', result=result,body=body,subject=subject)
