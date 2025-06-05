@@ -9,4 +9,5 @@ This is a spam email classifier project.
 
 1. Click [here](https://docs.google.com/document/d/1LR34J17Q-KZ3z7-L2V87KyQNWWa7TxWT/edit) to upload your worklog.
 ## Attention
-Please don't upload dataset or sensitive data to this repo, thank you.
+- Please don't upload dataset or sensitive data to this repo, thank you.
+- Please Do not commit on main branch, thank you.
