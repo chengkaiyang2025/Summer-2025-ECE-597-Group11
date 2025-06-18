@@ -132,28 +132,51 @@ def extract_features(email_text, spam_words=SPAM_WORDS):
     }
 
 import pandas as pd
+class PredictResult:
 
-def predict(new_data: pd.DataFrame, model, scaler, feature_cols):
+    def __init__(self, predicted_label:int, confidence:float, explain_info:list):
+        self.predicted_label = 'SPAM' if predicted_label == 1 else 'HAM'
+        self.confidence = confidence
+        self.explain_info = explain_info
+        self.conclusion = [f"""
+        The email is {self.predicted_label} with a confidence of {self.confidence:.9%}.👈
+        """]
+    def __str__(self):
+        return f"Predicted Label: {self.predicted_label}, Confidence: {self.confidence}, Explain Info: {self.explain_info}"
+    pass
 
-    # Select feature columns
-    X_new = new_data[feature_cols]
+def explain(new_data)->list:
+    re = extract_features(new_data['body'][0])
+    explain_info = [f"""
+    - This email contains {re['non_latin_count']} non-Latin characters from {re['non_latin_distinct_count']} different scripts, includes {re['emoji_count']} emojis, and uses {re['spam_word_count']} common spam words ({re['spam_word_ratio']:.2%} of total words).  \n
+    """,
 
-    # Apply standardization using the trained scaler
-    X_new_scaled = scaler.transform(X_new)
+    f"""
+    - It contains both a link and an email address, along with numerical and monetary content.  \n
+    """,
+        f"""
+    - These features, combined with a total text length of {re['text_length']} characters and {re['word_count']} words, suggest a high likelihood of promotional or malicious intent.  \n
 
-    # Predict class labels (0 or 1)
-    preds = model.predict(X_new_scaled)
+    """,]
+    return explain_info
+# TODO Use a class to predict and explain.
+def predict(input_pd: pd.DataFrame, model, scaler, feature_cols) -> PredictResult:
+    new_data = get_feature_from_body(input_pd)
+    assert len(new_data) == 1, "Only one row is allowed for prediction"
 
-    # Predict probabilities for class 1
-    probs = model.predict_proba(X_new_scaled)[:, 1]
+    X_scaled = scaler.transform(new_data[feature_cols])
+
+    pred = model.predict(X_scaled).item()
+    prob = model.predict_proba(X_scaled)[0, 1]
+    explain_info = explain(new_data)
+    # TODO
+    return PredictResult(predicted_label=pred, confidence=prob,explain_info = explain_info)
+
 
     # Add predictions and probabilities to the original data
-    result = new_data.copy()
-    result['prediction'] = preds
-    result['probability'] = probs
-
-    return result
-
+    # result = new_data.copy()
+    # result['prediction'] = preds
+    # result['probability'] = probs
 def get_feature_from_body(df):
     features_df = df['body'].apply(extract_features).apply(pd.Series)
 

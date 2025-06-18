@@ -1,4 +1,7 @@
 # SpamEmailClassifier
+
+## Commit
+Please don't commit on main branch, you can commit on dev branch.
 ## Online demo
 
 http://47.121.130.34:5000/
