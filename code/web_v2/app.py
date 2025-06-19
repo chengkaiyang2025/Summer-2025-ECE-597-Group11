@@ -4,7 +4,8 @@ import streamlit as st
 import random
 import time
 from dataset.data_spam import spam_samples
-from models.util.data_util import PredictResult
+from response_generator import MODEL_CHOICES, MODEL_LR, MODEL_NB, ResponseService
+
 st.set_page_config(
     page_title="UVic Spam Detector",     # 标签页标题
     page_icon="📧",                      # 图标（可以是 emoji 或路径）
@@ -14,10 +15,15 @@ st.header("Got an email in your UVic inbox...")
 st.subheader("... Worried it might be phishing or spam? 🤔")
 
 
+@st.cache_resource(show_spinner="Loading models")
+def get_response_service() -> ResponseService:
+    return ResponseService()
+
+service = get_response_service()
+
 st.caption("😊Let [our model](https://github.com/chengkaiyang2025/Summer-2025-ECE-597-Group11) help you spot if your email is a phishing scam!!")
 from datetime import datetime
 import logging
-from models.model_loader import p1
 
 logging.basicConfig(
     level=logging.INFO,  #  DEBUG, INFO, WARNING, ERROR, CRITICAL
@@ -33,8 +39,9 @@ if "messages" not in st.session_state:
 # Accept user input
 model_selected = st.selectbox(
     'Choose a model',
-    ['📈Logistic Regression', '🎲Naive Bayes', '🛰️SVM', '🌳Random Forest']
+    MODEL_CHOICES
 )
+BASE = "❓Any feedback on the webpage? Please send a message [here](https://www.linkedin.com/in/chengkai-yang-61b1a4253/)"
 
 
 def output_answer_with_funny_emoji(lines:list):
@@ -60,15 +67,11 @@ def output_answer_with_funny_emoji(lines:list):
 if st.button("Detect"):
 
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
+    md_content_list = service.predict(model_selected, email_subject, email_body)
     with st.chat_message("assistant"):
 
-        assistant_response:PredictResult = p1.predict_with_logistic_regression(email_body,email_subject)
-        linked_info = [f"The webpage and [**{model_selected}**](https://github.com/chengkaiyang2025/Summer-2025-ECE-597-Group11/issues/10) is build by [Kai](https://www.linkedin.com/in/chengkai-yang-61b1a4253/)"]
-
-        md_content_list = assistant_response.conclusion + assistant_response.explain_info + linked_info
         output_answer_with_funny_emoji(md_content_list)
-
+        st.caption(BASE)
     st.session_state.messages.append({"role": "assistant","md_content_list": md_content_list,"timestamp": ts})
     st.session_state.messages.append({"role": "user",
                                       "content": {
@@ -77,7 +80,6 @@ if st.button("Detect"):
                                       }
                                      ,"timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
-# Display chat messages from history on app rerun
 
 
 if len(st.session_state.messages)>0:
