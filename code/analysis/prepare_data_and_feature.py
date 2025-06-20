@@ -17,20 +17,23 @@ def string_to_multiline(text):
 # s = ham_df['text'].head(5)
 # ham_df['text_str'] = ham_df['text'].apply(string_to_multiline)
 def step_100_get_enron_pd():
-    # Set the path where the CSV files are located
-    csv_folder = CLEANED_ENRON_DATASET_PATH  # adjust this if running from a different working dir
-    csv_files = glob.glob(os.path.join(csv_folder, "*_5.csv"))
+    csv_folder = CLEANED_ENRON_DATASET_PATH
 
-    # Read and concatenate all CSVs into one DataFrame
-    enron_pd = pd.concat([pd.read_csv(f) for f in csv_files], ignore_index=True)
+    target_files = [
+        "emaildata_100000_4.csv",
+        "emaildata_100000_5.csv",
+    ]
 
-    # Optional: Preview the result
-    print(enron_pd.head())
+    #
+    full_paths = [os.path.join(csv_folder, fname) for fname in target_files]
+
+    enron_pd = pd.concat([pd.read_csv(f) for f in full_paths], ignore_index=True)
+
     enron_pd['body'] = enron_pd['text'].apply(string_to_multiline)
     enron_pd['label'] = 0
     print("Total rows:", len(enron_pd))
-    return enron_pd
 
+    return enron_pd
 
 def step_150_get_spam_dataset():
     df = pd.read_csv(CAPSTONE_DATASET)
@@ -44,16 +47,6 @@ def step_150_get_spam_dataset():
 
     return df
 
-
-def run_get_dataset():
-    spam_df = step_150_get_spam_dataset()
-    ham_df = step_100_get_enron_pd()
-    ham_df_sample = ham_df.sample(n=len(spam_df), random_state=42)
-
-    df = pd.concat([spam_df[['subject', 'body', 'label']], ham_df_sample[['subject', 'body', 'label']]],
-                   ignore_index=True)
-    df = df.sample(frac=1, random_state=42).reset_index(drop=True)
-    return df
 
 
 import re
@@ -162,8 +155,19 @@ def get_feature_from_body(df):
     return df_features
 
 
-def run_1():
-    df = run_get_dataset()
-    df_features = get_feature_from_body(df)
-    return df_features
-run_1()
+
+def combine_dataset_and_save_to_disk():
+    spam_df = step_150_get_spam_dataset()
+    ham_df = step_100_get_enron_pd()
+    # ham_df_sample = ham_df.sample(n=len(spam_df), random_state=42)
+
+    df = pd.concat([spam_df[['subject', 'body', 'label']], ham_df[['subject', 'body', 'label']]],
+                   ignore_index=True)
+    # df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+    df.to_json("D:\GITHUB\Summer-2025-ECE-597-Group11\data\output\dataset_v20250618.json")
+    return df
+
+df = combine_dataset_and_save_to_disk()
+# df_features = get_feature_from_body(df)
+
+

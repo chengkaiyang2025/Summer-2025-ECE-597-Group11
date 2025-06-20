@@ -8,5 +8,5 @@ def get_pkl_path():
     pkl_path = os.path.join(current_dir, 'models','parameters')
     return pkl_path
 VERSION = 'v1'
-
+BAYES_VERSION=  'v1'
 
