@@ -10,3 +10,7 @@ def get_pkl_path():
 VERSION = 'v1'
 BAYES_VERSION=  'v1'
 
+def get_image_path():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    pkl_path = os.path.join(current_dir, 'models','images')
+    return pkl_path

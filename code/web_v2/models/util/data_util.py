@@ -138,11 +138,19 @@ class PredictResult:
         self.predicted_label = 'SPAM' if predicted_label == 1 else 'HAM'
         self.confidence = confidence
         self.explain_info = explain_info
+        self.image_path = None
         self.conclusion = [f"""
         The email is {self.predicted_label} with a confidence of {self.confidence:.9%}.👈
         """]
     def __str__(self):
         return f"Predicted Label: {self.predicted_label}, Confidence: {self.confidence}, Explain Info: {self.explain_info}"
+
+    def set_image_path(self,image_path):
+        assert os.path.exists(image_path),"Couldn't find path on server, please contact [me](https://www.linkedin.com/in/chengkai-yang-61b1a4253/)"
+        self.image_path = image_path
+        pass
+    def get_image_path(self):
+        return self.image_path
     pass
 
 def explain(new_data)->list:

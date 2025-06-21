@@ -1,10 +1,11 @@
+import os.path
 import uuid
 
 import streamlit as st
 import random
 import time
-from dataset.data_spam import spam_samples
-from response_generator import MODEL_CHOICES, MODEL_LR, MODEL_NB, ResponseService
+from dataset.output import kaggle_spam_sample
+from response_generator import MODEL_CHOICES, MODEL_LR, MODEL_NB, ResponseService, ResponseMessage
 
 st.set_page_config(
     page_title="UVic Spam Detector",     # 标签页标题
@@ -30,8 +31,16 @@ logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
-email_subject = st.text_input("Email Subject",value=f"{spam_samples[0]['subject']}")
-email_body = st.text_area("Email Body:", height=250,value=f"{spam_samples[0]['body']}")
+# Step 1: 初始随机样本
+if "sample" not in st.session_state:
+    st.session_state.sample = random.choice(kaggle_spam_sample)
+
+
+# Step 3: 使用当前样本内容
+sample = st.session_state.sample
+email_subject = st.text_input("Email Subject", value=sample["subject"])
+email_body = st.text_area("Email Body:", height=250, value=sample["body"])
+
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -41,7 +50,7 @@ model_selected = st.selectbox(
     'Choose a model',
     MODEL_CHOICES
 )
-BASE = "❓Any feedback on the webpage? Please send a message [here](https://www.linkedin.com/in/chengkai-yang-61b1a4253/)"
+BASE = "💡Any feedback on the webpage? Feel free to create a [Github Issue](https://github.com/chengkaiyang2025/Summer-2025-ECE-597-Group11/issues)"
 
 
 def output_answer_with_funny_emoji(lines:list):
@@ -64,15 +73,32 @@ def output_answer_with_funny_emoji(lines:list):
             message_placeholder.markdown(full_response + emoji_r)
             message_placeholder.markdown(full_response)
 
-if st.button("Detect"):
+
+col1, col2 = st.columns([1, 1])  # 左列 1x，右列 3x 更突出 Detect
+
+
+with col1:
+    st.button("🎲 Generate Sample", help="Click to load a new random email",
+              on_click=lambda: st.session_state.update(sample=random.choice(kaggle_spam_sample)),
+              use_container_width=True)
+with col2:
+    detect_clicked = st.button("🚨 Detect", type="primary", use_container_width=True)
+
+if detect_clicked:
 
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    md_content_list = service.predict(model_selected, email_subject, email_body)
+    resp:ResponseMessage = service.response(model_selected, email_subject, email_body)
     with st.chat_message("assistant"):
 
-        output_answer_with_funny_emoji(md_content_list)
+        output_answer_with_funny_emoji(resp.md_content_list)
+        if resp.image_path and len(resp.image_path)>0 and os.path.exists(resp.image_path):
+            st.image(resp.image_path)
         st.caption(BASE)
-    st.session_state.messages.append({"role": "assistant","md_content_list": md_content_list,"timestamp": ts})
+
+    st.session_state.messages.append({"role": "assistant",
+                                      "md_content_list": resp.md_content_list,
+                                      "image_path":resp.image_path,
+                                      "timestamp": ts})
     st.session_state.messages.append({"role": "user",
                                       "content": {
                                           "email_subject":email_subject,
@@ -97,6 +123,8 @@ if len(st.session_state.messages)>0:
                 st.caption(f"{model_selected}")
                 for x in message["md_content_list"]:
                     st.markdown(x)
+                if message['image_path'] and len(message['image_path'])>0 and os.path.exists(message['image_path']):
+                    st.image(message['image_path'])
                 st.markdown("****************")
 
             elif message["role"] == "user":
