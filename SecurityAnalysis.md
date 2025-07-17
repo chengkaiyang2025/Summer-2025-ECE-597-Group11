@@ -27,11 +27,7 @@ UVic Spam Detector is a lightweight, publicly accessible web-based application t
 Based on the usage and design of this web application, we will focus on how confidentiality, integrity, and availability, the three pillars of cyber security. Each vulnerability will be discussed based on the nature of this tool to see if it poses a threat to the application. We will also discuss criticality (impact + likelihood) of these vulnerabilities and how they can be exploit in practice.
 
 ### Methodology
-Our approach combines traditional web‑app testing and ML‑specific threat modeling: 
-1.
-2.
-3.
-4.
+Our approach combines traditional web‑app testing and ML‑specific threat modeling.
 This structured methodology ensures comprehensive coverage of both classic web vulnerabilities and emerging risks in machine‑learning‑driven applications.
 
 ## System Overview
@@ -40,7 +36,7 @@ This structured methodology ensures comprehensive coverage of both classic web v
 ### Key Technologies & Dependencies  
 - ML model(s), libraries, deployment platform (e.g. Flask + scikit‑learn, AWS Lambda, etc.).  
 ### Data Flow  
-- How email/text enters the system, is preprocessed, classified, and logged.
+user input raw email content through website in text. the punctuations will be removed for better analysis on word distributions.  (- How email/text enters the system, is preprocessed, classified, and logged.
 
 ## Security Analysis
 ### Threat Model  
