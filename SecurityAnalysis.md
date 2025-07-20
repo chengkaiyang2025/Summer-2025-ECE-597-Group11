@@ -24,28 +24,15 @@ Machine Learning Models including: Logistic Regression, Naive Bayes, SVM, and Ra
 ### Data Flow  
 A user (no login required) pastes raw email text into the web form, after which the application normalizes it (e.g., strips punctuation and tokenizes words) and vectorizes the tokens with the pre‑built Bag‑of‑Words / TF‑IDF model for the selected classifier (Logistic Regression, Naive Bayes, SVM, or Random Forest). The chosen static model then produces a spam / ham (non‑spam) label and currently a confidence score plus indicative tokens for explanation, which is returned in the response. The email content provided by users is neither stored or used in retraining, but processed only in memory for the current classification and then discarded.
 
-seperate into: 
-website security analysis
-ML model security analysis
-If we were to make it an API or extension, what should possible risks should we be aware of.
-
 ## Security Analysis
 
 Website
 
 Possible injection? 
-### Threat Model  
-- **Actors**: malicious users, adversarial ML attackers, insider threats  
-- **Assets**: model weights, email content, user metadata  
-### Attack Surfaces  
-- **Input channels**: poisoned training data, crafted emails  
-- **API endpoints**: injection, authentication bypass  
-- **Model inference**: query‑based model extraction or evasion  
-### Vulnerabilities & Findings  
-- **Data poisoning risks**: how unvetted input could skew model  
-- **Model evasion**: adversarial examples that bypass spam filters  
-- **Injection**: unsanitized fields leading to XSS/SQLi in the dashboard  
-- **Configuration issues**: overly permissive IAM roles, hard‑coded secrets  
+
+As the application does not request user to log in, and they are most likely spam emails, we do not consider privacy as a pressing issue in this report. We would recommand to add an notification to alert user that they should not be pasting anything sensitive or personal information on to the website. But for now, we rely solely on the effort of users to not share personal information with use to avoid any man-in-the-middle attack. 
+(This was put into future work as it's specified towards privacy, which is not really our concern in this application)
+  
 
 ### Machine Learning Model Information Disclosure & Feedback Risk
 
@@ -86,4 +73,5 @@ These mitigation methods, tuned based on real‑world usage data, provide a good
 - **Next Steps**  
   Roadmap for implementing fixes, timelines, and responsible teams.  
 - **Future Work**  
-  Exploring differential privacy, federated learning, periodic red‑team exercises.
+  As the application does not request user to log in, and they are most likely spam emails, we do not consider privacy as a pressing issue in this report. We would recommand to add an notification to alert user that they should not be pasting anything sensitive or personal information on to the website. But for now, we rely solely on the effort of users to not share personal information with use to avoid any man-in-the-middle attack. 
+Exploring differential privacy, federated learning, periodic red‑team exercises.
