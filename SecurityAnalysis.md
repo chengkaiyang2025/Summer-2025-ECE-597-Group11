@@ -1,20 +1,7 @@
 # Security Analysis and Suggestions on UVIC Spam Detector
 
 ## Abstract
-- **Purpose & Scope**  
-
-  UVic Spam Detector is a web-based tool that allows anyone to upload their email content and choose from several machine learning models to determin if it is in fact a spam email. 
-  
-  This analysis covers:
-
-  1. **Application Security**  
-   - Transport layer (lack of HTTPS)  
-   - Input handling (file uploads, form fields, JSON endpoints)  
-   - Session‑ and endpoint‑level controls (CSRF, auth, rate limiting)
-
-  Machine Learning Security
-
-  We will discuss possible attack surface and vectors, then propose concrete mitigations.  (To be revaluated e.g. TLS enforcement, input sanitization, adversarial training, request throttling, dependency hardening)
+ UVic Spam Detector is a publicly accessible web application that lets users submit email text and select from multiple machine‑learning classifiers to determine if a message is spam or legitimate. This report analyzes both the web application surface and the underlying models, identifying vulnerabilities, rating their criticality, and recommending concrete mitigations.
 
 ## Introduction
 
@@ -22,7 +9,7 @@
 UVic Spam Detector is a lightweight, publicly accessible web-based application that allows anyone to submit raw email content to receive a “spam” or “not spam” verdict, using one of four models: Logistic Regression, Naive Bayes, Support Vector Machine (SVM), or Random Forest. The site exposes a simple upload form and JSON API for inference but lacks HTTPS, authentication, and access controls—making every endpoint vulnerable to public and automated abuse. Internally, uploaded emails are tokenized and vectorized before being classified by models such as Naive Bayes, Random Forest, or a small neural network.
 
 ### Objectives  
-Based on the usage and design of this web application, we will focus on how confidentiality, integrity, and availability, the three pillars of cyber security. Each vulnerability will be discussed based on the nature of this tool to see if it poses a threat to the application. We will also discuss criticality (impact + likelihood) of these vulnerabilities and how they can be exploit in practice.
+Based on the usage and design of this web application, we will focus on confidentiality, integrity, and availability, the three pillars of cyber security. Each vulnerability will be discussed based on the nature of this tool to see if it poses a threat to the application. We will also discuss criticality (impact + likelihood) of these vulnerabilities and how they can be exploit in practice.
 
 ### Methodology
 Our approach combines traditional web‑app testing and ML‑specific threat modeling. (mostly static?)
