@@ -12,9 +12,7 @@
    - Input handling (file uploads, form fields, JSON endpoints)  
    - Session‑ and endpoint‑level controls (CSRF, auth, rate limiting)
 
-  2. **ML‑Pipeline Security**  
-   - Data‑poisoning and adversarial‑evasion threats against the models  
-   - Model‑extraction risks via repeated inference queries
+  Machine Learning Security
 
   We will discuss possible attack surface and vectors, then propose concrete mitigations.  (To be revaluated e.g. TLS enforcement, input sanitization, adversarial training, request throttling, dependency hardening)
 
@@ -27,18 +25,28 @@ UVic Spam Detector is a lightweight, publicly accessible web-based application t
 Based on the usage and design of this web application, we will focus on how confidentiality, integrity, and availability, the three pillars of cyber security. Each vulnerability will be discussed based on the nature of this tool to see if it poses a threat to the application. We will also discuss criticality (impact + likelihood) of these vulnerabilities and how they can be exploit in practice.
 
 ### Methodology
-Our approach combines traditional web‑app testing and ML‑specific threat modeling.
+Our approach combines traditional web‑app testing and ML‑specific threat modeling. (mostly static?)
 This structured methodology ensures comprehensive coverage of both classic web vulnerabilities and emerging risks in machine‑learning‑driven applications.
 
 ## System Overview
 ### Architecture Diagram  
-- Brief diagram or description of components (data inputs, processing pipeline, classification engine, user interface, storage).  
+(data inputs, processing pipeline, classification engine, user interface, storage).  
+
 ### Key Technologies & Dependencies  
-- ML model(s), libraries, deployment platform (e.g. Flask + scikit‑learn, AWS Lambda, etc.).  
+Machine Learning Models including: Logistic Regression, Naive Bayes, SVM, and Random Forest; Develped on Jupter Notebook using Python, Depolyed using AWS.  
 ### Data Flow  
-user input raw email content through website in text. the punctuations will be removed for better analysis on word distributions.  (- How email/text enters the system, is preprocessed, classified, and logged.
+A user (no login required) pastes raw email text into the web form, after which the application normalizes it (e.g., strips punctuation and tokenizes words) and vectorizes the tokens with the pre‑built Bag‑of‑Words / TF‑IDF model for the selected classifier (Logistic Regression, Naive Bayes, SVM, or Random Forest). The chosen static model then produces a spam / ham (non‑spam) label and currently a confidence score plus indicative tokens for explanation, which is returned in the response. The email content provided by users is neither stored or used in retraining, but processed only in memory for the current classification and then discarded.
+
+seperate into: 
+website security analysis
+ML model security analysis
+If we were to make it an API or extension, what should possible risks should we be aware of.
 
 ## Security Analysis
+
+Website
+
+Possible injection? 
 ### Threat Model  
 - **Actors**: malicious users, adversarial ML attackers, insider threats  
 - **Assets**: model weights, email content, user metadata  
@@ -48,4 +56,47 @@ user input raw email content through website in text. the punctuations will be r
 - **Model inference**: query‑based model extraction or evasion  
 ### Vulnerabilities & Findings  
 - **Data poisoning risks**: how unvetted input could skew model  
-- **Model evasion**: adversarial
+- **Model evasion**: adversarial examples that bypass spam filters  
+- **Injection**: unsanitized fields leading to XSS/SQLi in the dashboard  
+- **Configuration issues**: overly permissive IAM roles, hard‑coded secrets  
+
+### Machine Learning Model Information Disclosure & Feedback Risk
+
+While the UI currently discloses the specific classifier family (e.g., Logistic Regression) and the top contributing words plus a numeric confidence score [Figure 2], the primary enabling factor for attack is the public endpoint access without rate limitation. Our effort to provide transparency, such as showing users why a message was labeled spam or ham (legitimate, non‑spam email), does improve trust and can educate users. However, the same explanations given (exact model name, precise confidence percentage, and ranked contributing tokens) provides attackers with rich feedback. By iteratively submitting modified emails and observing how individual token changes shift contribution rankings or changes the confidence score, an adversary can rapidly:
+
+1. Learn which “spam” tokens have the highest positive weights.
+2. Inject “ham” tokens or benign filler phrases to dilute those weights.
+3. Obfuscate high‑impact spam tokens (e.g., spacing) and confirm success via rising confidence.
+4. Approximate the model’s decision boundary (model extraction) with far fewer queries than if only a binary label were returned.
+
+To conclude, unlimited queries reduce the time to achieve reliable evasion from potentially thousands of probes (label‑only) to tens or low hundreds (rich explanations), significantly increasing the likelihood of successful large‑scale spam evasion. It's important to find the balance between transparency and security in this case.
+
+![alt text](Explaination_provided.png)
+
+
+### Mitigations & Transparency Trade‑Off
+
+We propose the following three mitigations that most effectively achieve a trade‑off between security and transparency.
+
+**Rate Limiting & Monitoring**
+
+For each IP address, implement request quotas (e.g., limit requests per 5 minutes to 30) and log anomalies such as unusually high volume from the same IP address. Consider temporarily blocking an IP if abnormal usage is repeatedly found in the logs. This directly cuts an attacker’s attempts and slows the process of crafting evasions while having minimal effect on normal users, whose request volume should remain below the limits.
+
+**Output Minimization**
+
+Instead of the current numeric confidence score, return only a coarse confidence bucket (e.g., High, Medium, Low). This removes fine‑grained signals attackers can analyze to fine‑tune their spam recipes, yet still provides legitimate users a reasonable sense of certainty and transparency.
+
+**Feature Attribution Throttling**
+
+Return only a small set of category or indicative terms (e.g., “urgent call‑to‑action,” “financial request,” “ambiguous origin”) to show why a message was classified as spam or non‑spam. These descriptors still give users useful explanation, although some detail is lost. At the same time, this greatly hinders attackers from reverse‑engineering exact feature weights across models for evasion. The full ranked token list currently shown can be moved to internal logs only.
+
+These mitigation methods, tuned based on real‑world usage data, provide a good balance of security and transparency, helping ensure the web‑based application remains effective and resilient over the long term.
+
+
+## Conclusion
+- **Summary of Risks & Benefits**  
+  Reiterate the top two or three issues and how your recommendations mitigate them.  
+- **Next Steps**  
+  Roadmap for implementing fixes, timelines, and responsible teams.  
+- **Future Work**  
+  Exploring differential privacy, federated learning, periodic red‑team exercises.
