@@ -62,11 +62,11 @@ Return only a small set of category or indicative terms (e.g., “urgent call‑
 
 These mitigation methods, tuned based on real‑world usage data, provide a good balance of security and transparency, helping ensure the web‑based application remains effective and resilient over the long term.
 
-### Privacy Concerns
+## Privacy Concerns
 
 As the application does not require user authentication and primarily processes spam emails without storing them, we do not consider privacy a critical concern at this stage. However, we recommend displaying a clear warning to users, advising them not to paste any sensitive or personal information into the website. For now, we rely on user discretion to avoid sharing private data. This reduces potential harm in the event of a man-in-the-middle (MITM) attack or data interception.
 
-### Future Work
+## Future Work
 
 With fine-tuning the results, this application could be integrated into a firewall to alert users of potential spam emails and help raise awareness within organizations to prevent fraud or sensitive information leaks. Transforming our website-based spam detection tool into an API for firewalls or email systems introduces several technical and operational concerns.
 
