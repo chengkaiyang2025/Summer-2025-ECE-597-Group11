@@ -84,8 +84,8 @@ class PredictNaiveBayes(PredictModel):
     def __init__(self):
 
         # Load model and vectorizer
-        self.nb = joblib.load(os.path.join(get_pkl_path(), f'naive_bayes_model_{BAYES_VERSION}.pkl'))
-        self.vectorizer = joblib.load(os.path.join(get_pkl_path(), f'tfidf_vectorizer_{BAYES_VERSION}.pkl'))
+        self.nb = joblib.load(os.path.join(get_pkl_path(), f'naive_bayes_model_final_bow.pkl'))
+        self.vectorizer = joblib.load(os.path.join(get_pkl_path(), f'bow_vectorizer_final.pkl'))
     def predict_email(self, spam_content,subject) -> PredictResult:
         email_text = subject + " " + spam_content
 
@@ -98,7 +98,26 @@ class PredictNaiveBayes(PredictModel):
             predicted_label=prediction[0],
             confidence=confidence[0][1],
             explain_info=[
-                "We are still working on explainable ai to explain the model result.",
+
+            ]
+        )
+
+class PredictRandomForrest(PredictModel):
+    def __init__(self):
+        self.model = joblib.load(os.path.join(get_pkl_path(), f'random_forest_model.pkl'))
+        self.vectorizer = joblib.load(os.path.join(get_pkl_path(), f'bow_vectorizer.pkl'))
+    def predict_email(self, spam_content,subject) -> PredictResult:
+        email_text = subject + " " + spam_content
+
+        # Transform and predict
+        X_input = self.vectorizer.transform([email_text])
+        prediction = self.model.predict(X_input)
+        confidence = self.model.predict_proba(X_input)
+        logging.info(f"The label is {prediction[0]}, the confidence is  {confidence[0][1]}")
+        return PredictResult(
+            predicted_label=prediction[0],
+            confidence=confidence[0][1],
+            explain_info=[
 
             ]
         )
