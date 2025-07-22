@@ -28,8 +28,9 @@ Key benefits of this system include:
 These features make the application suitable for broader deployment as a browser extension, firewall plugin, or email-scanning API, especially in environments where simplicity, speed, and privacy are prioritized.
 
 ### Architecture Diagram  
-
-![Fiture.1](system_architecture.jpg)
+<p align="center">
+<img src="system_architecture.jpg" alt="System Architecture" width="600"/>
+</p>
 
 ### Key Technologies & Dependencies  
 Machine Learning Models including: Logistic Regression, Naive Bayes, SVM, and Random Forest; Develped on Jupter Notebook using Python, Depolyed using AWS.  
@@ -54,8 +55,9 @@ While the UI currently discloses the specific classifier family (e.g., Logistic 
 4. Approximate the model’s decision boundary (model extraction) with far fewer queries than if only a binary label were returned.
 
 To conclude, unlimited queries reduce the time to achieve reliable evasion from potentially thousands of probes (label‑only) to tens or low hundreds (rich explanations), significantly increasing the likelihood of successful large‑scale spam evasion. It's important to find the balance between transparency and security in this case.
-
-![Figure.2](Explaination_provided.png)
+<p align="center">
+<img src="Explaination_provided.png" alt="Explaination Provided" width="600"/>
+</p>
 
 ### Mitigations & Transparency Trade‑Off
 
