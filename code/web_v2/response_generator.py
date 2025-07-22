@@ -12,7 +12,10 @@ MODEL_SVM = '🛰️SVM'
 MODEL_RF = '🌳Random Forest'
 
 #
-MODEL_CHOICES = [MODEL_LR, MODEL_NB, MODEL_SVM, MODEL_RF]
+MODEL_CHOICES = [MODEL_LR, MODEL_NB,
+
+                 # MODEL_SVM,
+                 MODEL_RF]
 AUTHOR_INFO = {
 
     MODEL_LR: [
