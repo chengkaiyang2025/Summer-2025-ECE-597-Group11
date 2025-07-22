@@ -28,8 +28,8 @@ Key benefits of this system include:
 These features make the application suitable for broader deployment as a browser extension, firewall plugin, or email-scanning API, especially in environments where simplicity, speed, and privacy are prioritized.
 
 ### Architecture Diagram  
-(data inputs, processing pipeline, classification engine, user interface, storage).  
 
+![Fiture.1](system_architecture.jpg)
 
 ### Key Technologies & Dependencies  
 Machine Learning Models including: Logistic Regression, Naive Bayes, SVM, and Random Forest; Develped on Jupter Notebook using Python, Depolyed using AWS.  
