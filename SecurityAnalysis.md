@@ -82,5 +82,4 @@ Our team identifies two major vunerbabilities threatening this applicaiton, MITM
  
 - **Next Steps**  
   Roadmap for implementing fixes, timelines, and responsible teams.  
-- **Future Work**  
 
