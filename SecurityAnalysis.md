@@ -90,8 +90,51 @@ In firewall or email system integrations, the API will be expected to provide fa
 ## Conclusion
 - **Summary of Risks**
 
-Our team identifies two major vunerbabilities threatening this applicaiton, MITM and Evasion, one targeting on traditonal website and the other on machine learning models. 
+Despite its lightweight and privacy-preserving architecture, the UVIC Spam Detector faces several key security risks that could compromise its effectiveness and integrity if left unaddressed. These risks span both the web application layer and the underlying machine learning models, and highlight the challenges of building transparent yet secure systems.
+1. Model Exploitation and Evasion Attacks
+The system's transparency — in terms of detailed model feedback that includes the classifier type, confidence scores, and influential tokens — could unintentionally assist the adversary in generating adversarial inputs. Attackers may systematically probe the model to:
+Identify heavily weighted spam features to exploit.
+Inject benign "ham" tokens to reduce spam features (data poisoning).
+Obscure high-value terms to avoid detection.
+Approximating the decision boundary through model extraction attacks.
+These strategies involve a process of iterative spam evasion where attackers modify the messages to get around detection with fewer attempts, ultimately spoiling the reliability of the classifier.
+2. Lack of Rate Limiting and Abuse Prevention
+The nature of the application allows public, unauthenticated access without rate limiting, meaning that it is susceptible to attacks based on brute-force or automated submissions. Specifically, adversaries can submit a range of queries testing spam variations, or exploit the public access to conduct model inversion attacks revealing valuable knowledge of the model. The nature of its unrestricted access constitutes the following potential vulnerabilities:
+Rapid probe and evasion attempts. 
+Automated scraping of confidence metrics for reverse engineering.
+Potential Denial-of-Service (DoS) due to effectively unregulated query traffic.
+3. Man-in-the-Middle (MitM) and Transport Security Risks
+Users copy raw email content and paste it into the web form. Investigators should consider this: no encryption and/or no SSL encryption (https) means that email content could be intercepted. Sensitive or personally identifiable information (PII) in emails could be a concern as the content is not being stored in the system, but will be exposed when sent and threatening privacy and creating unethical violations in email communication.
+4. Model Staleness and Drift
+Although the system is designed to operate with a stateless process, lacking a retraining mechanism or any feedback loop of the user can result in continual model decline. As spam methods will change, the static models will not be as effective, resulting in more false negatives, and ultimately diminish trust in the tool.
+By addressing these risks—by implementing some safeguards such as throttling, obfuscating any confidential model feedback, utilizing secure transmission methods, and periodically update the model—the UVIC Spam Detector could maintain a stronger posture and still offer the original features of speed and usability, as well as privacy considerations.
+ 
  
 - **Next Steps**  
-implementing fixes
+To enhance the security, reliability, and scalability of the UVIC Spam Detector while preserving its core advantages (stateless design, privacy, and speed), we propose the following next steps:
+1. Implement Security Enhancements
+Implement Rate Limiting and CAPTCHA: Limit the number of API requests or form submissions allowed from a particular IP address to combat automated abuse. Implement CAPTCHA to assist in the mitigation of bot-level probing.
+Use HTTPS by default: Ensure all communications happen over secure HTTPS protocols to protect the content of emails in transit and combat man-in-the-middle (MitM) attacks.
+Limit Exposure of Feedback: Limit or randomize the exposure of model explanations to limit model probing/extraction (i.e., only allow higher-level explanations; token level feedback can be limited).
+2. Harden the ML Model Against Evasion
+Adversarial Training: Present adversarial examples in training the model, to help ensure the model is more robust to constructed inputs.
+Confidence Smoothing: Introduce some noise, or use other techniques such as differential privacy, to lessen the fidelity of confidence scores without dramatically reducing user utility.
+Token Obfuscation Detection: Add preprocessing checks to identify token obfuscation techniques (inserting extra characters, Unicode look-alikes, etc.).
+3. Improve Model Management
+Model Documentation and Tracking: Document and track model versions and output history for auditing and rollback to previous models in the eventuality of drift or exploitation.
+Model Updating: While the model will be static for now, investigate lightweight, privacy-preserving updating mechanisms (e.g., differential learning, federated updates utilizing synthetic or anonymized spam datasets).
+Drift Monitoring: Integrate tools to assess shifts in data input distribution over time, or monitoring model performance.
+4. Conduct Formal Risk Assessment
+Threat Modeling: Employ STRIDE or something comparable to identify and categorize risks systematically throughout the system (spoofing, tampering, etc., information disclosure).
+Red Team Assessment: Simulate attacks using ethical hacking techniques to discover additional vulnerabilities that have not been recognized.
+Security Review and Penetration Testing: Use third-party reviewers or ethical hackers to provide independent security reviews for the application and its endpoints.
+
+5. Expand Deployment Use Cases
+Browser Extension Creation: Create a Chrome/Firefox extension that uses the spam detector to conduct real-time scanning of webmail.
+Firewall / Email Gateway Plugin: Package the tool as a plugin for deployment in corporate email pipelines to provide a lightweight, real-time spam filtering ability.
+API Productization: Develop and secure an API layer that includes keys, rate limits, and usage logs that third-party developers can use to integrate the service into their platform.
+6. Research Extensions
+Think about model transparency and vulnerability and their mutual exclusivity. Through user studies, probe the tradeoff between explainability and security.
+Comparative study: Test the UVIC Spam Detector against other easily implementable ML spam detectors in adversarial settings.
+Dataset expansion and diversity: Build a rich dataset representative of new phishing methods, cross-language datasets, and new ways of obfuscation to enhance generalization of models.
 
