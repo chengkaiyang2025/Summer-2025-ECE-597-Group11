@@ -15,8 +15,21 @@ Based on the usage and design of this web application, we will focus on confiden
 Our approach combines traditional threat modeling techniques targeting the website with machine-learning-specific threat models. The report also addresses privacy concerns and potential future risks, especially if the system is extended as a browser extension or API for third-party use. This structured methodology ensures comprehensive coverage of both classic web vulnerabilities and emerging threats in machine learning–driven applications.
 
 ## System Overview
+
+The goal of this application is to provide a fast, lightweight tool for identifying potential spam emails using machine learning. Unlike traditional filtering tools, our system does not rely on user login, does not store data, and operates in a stateless manner.
+
+Key benefits of this system include:
+
+1. Stateless design, which reduces privacy liability by avoiding storage of any user data.
+2. Lightweight architecture, making it easy to integrate into firewalls or email pipelines.
+3. No data retention, minimizing compliance concerns around handling personal or sensitive content.
+4. Practical utility, as it helps raise awareness about spam and phishing risks through generated explanations.
+
+These features make the application suitable for broader deployment as a browser extension, firewall plugin, or email-scanning API, especially in environments where simplicity, speed, and privacy are prioritized.
+
 ### Architecture Diagram  
 (data inputs, processing pipeline, classification engine, user interface, storage).  
+
 
 ### Key Technologies & Dependencies  
 Machine Learning Models including: Logistic Regression, Naive Bayes, SVM, and Random Forest; Develped on Jupter Notebook using Python, Depolyed using AWS.  
@@ -42,7 +55,7 @@ While the UI currently discloses the specific classifier family (e.g., Logistic 
 
 To conclude, unlimited queries reduce the time to achieve reliable evasion from potentially thousands of probes (label‑only) to tens or low hundreds (rich explanations), significantly increasing the likelihood of successful large‑scale spam evasion. It's important to find the balance between transparency and security in this case.
 
-![alt text](Explaination_provided.png)
+![Figure.2](Explaination_provided.png)
 
 ### Mitigations & Transparency Trade‑Off
 
@@ -66,20 +79,19 @@ These mitigation methods, tuned based on real‑world usage data, provide a good
 
 As the application does not require user authentication and primarily processes spam emails without storing them, we do not consider privacy a critical concern at this stage. However, we recommend displaying a clear warning to users, advising them not to paste any sensitive or personal information into the website. For now, we rely on user discretion to avoid sharing private data. This reduces potential harm in the event of a man-in-the-middle (MITM) attack or data interception.
 
-## Future Work
+## Integration and Future Expansion
 
 With fine-tuning the results, this application could be integrated into a firewall to alert users of potential spam emails and help raise awareness within organizations to prevent fraud or sensitive information leaks. Transforming our website-based spam detection tool into an API for firewalls or email systems introduces several technical and operational concerns.
 
 Privacy and data handling will not be our responsibility, but rather that of the firewall or the integrating organization. If encryption is needed, it is up to the client system to ensure that email content is securely transmitted. Our system remains stateless and does not store or log any data; it simply returns a coarse confidence score for each analyzed email. However, as mentioned earlier, the API is still vulnerable to man-in-the-middle (MITM) attacks if transmission is not secured. Therefore, proper controls—such as enforcing HTTPS and requiring authentication—should be in place.
 
-In firewall or email system integrations, the API will also be expected to provide fast and reliable responses. This becomes a technical concern, especially under high-volume traffic or real-time filtering. Ensuring low latency, fault tolerance, and scalability will be important challenges moving forward.
-
+In firewall or email system integrations, the API will be expected to provide fast and reliable responses. This becomes a technical concern, especially under high-volume traffic or real-time filtering. Ensuring high accuracy, low latency, and scalability will be important challenges moving forward.
 
 ## Conclusion
-- **Summary of Risks & Benefits**
+- **Summary of Risks**
 
 Our team identifies two major vunerbabilities threatening this applicaiton, MITM and Evasion, one targeting on traditonal website and the other on machine learning models. 
  
 - **Next Steps**  
-  Roadmap for implementing fixes, timelines, and responsible teams.  
+implementing fixes
 
