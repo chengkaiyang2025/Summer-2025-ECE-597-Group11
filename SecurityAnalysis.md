@@ -9,7 +9,7 @@
 UVic Spam Detector is a lightweight, publicly accessible web-based application that allows anyone to submit raw email content to receive a “spam” or “not spam” verdict, using one of four models: Logistic Regression, Naive Bayes, Support Vector Machine (SVM), or Random Forest. The site exposes a simple upload form and JSON API for inference but lacks HTTPS, authentication, and access controls—making every endpoint vulnerable to public and automated abuse. Internally, uploaded emails are tokenized and vectorized before being classified by models such as Naive Bayes, Random Forest, or a small neural network.
 
 ### Objectives  
-Based on the usage and design of this web application, we will focus on confidentiality, integrity, and availability, the three pillars of cyber security. Found vulnerabilities will be discussed based on the nature of this tool to see if it poses a threat to the application. We will also discuss criticality (impact + likelihood) of these vulnerabilities and how they can be exploit in practice.
+Based on the usage and design of this web application, we will focus on confidentiality, integrity, and availability, the three pillars of cyber security. Found vulnerabilities will be discussed based on the nature of this tool to see if it poses a threat to the application. We will also discuss criticality (impact + likelihood) of these vulnerabilities and how they can be exploited in practice.
 
 ### Methodology
 Our approach combines traditional threat modeling techniques targeting the website with machine-learning-specific threat models. The report also addresses privacy concerns and potential future risks, especially if the system is extended as a browser extension or API for third-party use. This structured methodology ensures comprehensive coverage of both classic web vulnerabilities and emerging threats in machine learning–driven applications.
@@ -33,10 +33,10 @@ These features make the application suitable for broader deployment as a browser
 </p>
 
 ### Key Technologies & Dependencies  
-Machine Learning Models including: Logistic Regression, Naive Bayes, SVM, and Random Forest; Develped on Jupter Notebook using Python, Depolyed using AWS.  
+Machine Learning Models including: Logistic Regression, Naive Bayes, SVM, and Random Forest; Developed on Jupyter Notebook using Python; Deployed using AWS.  
 
 ### Data Flow  
-A user (no login required) pastes raw email text into the web form, after which the application normalizes it (e.g., strips punctuation and tokenizes words) and vectorizes the tokens with the pre‑built Bag‑of‑Words / TF‑IDF model for the selected classifier (Logistic Regression, Naive Bayes, SVM, or Random Forest). The chosen static model then produces a spam / ham (non‑spam) label and currently a confidence score plus indicative tokens for explanation, which is returned in the response. The email content provided by users is neither stored or used in retraining, but processed only in memory for the current classification and then discarded.
+A user (no login required) pastes raw email text into the web form, after which the application normalizes it (e.g., strips punctuation and tokenizes words) and vectorizes the tokens with the pre‑built Bag‑of‑Words / TF‑IDF model for the selected classifier (Logistic Regression, Naive Bayes, SVM, or Random Forest). The chosen static model then produces a spam / ham (non‑spam) label and currently a confidence score plus indicative tokens for explanation, which is returned in the response. The email content provided by users is neither stored nor used in retraining, but processed only in memory for the current classification and then discarded.
 
 ## Security Analysis
 
@@ -92,7 +92,7 @@ In firewall or email system integrations, the API will be expected to provide fa
 ## Conclusion
 - **Summary of Risks**
 
-Our team identifies two major vunerbabilities threatening this applicaiton, MITM and Evasion, one targeting on traditonal website and the other on machine learning models. 
+Our team identifies two major vulnerabilities threatening this application, MITM and Evasion, one targeting on traditional website and the other on machine learning models. 
  
 - **Next Steps**  
 implementing fixes
