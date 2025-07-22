@@ -39,7 +39,76 @@ A user (no login required) pastes raw email text into the web form, after which 
 
 ## Security Analysis
 
-Website
+### Website Vulnerables
+
+#### Man‑in‑the‑Middle (MITM)
+
+Because the web UI and its JSON API are served over plain HTTP (no TLS), an attacker who controls—or is on the path of—the user's network (e.g. a public Wi‑Fi, compromised router, or via ARP/DNS spoofing) can:
+
+**Passive interception**
+
+- Position themselves between the user and server using techniques like ARP poisoning, rogue access points, or DNS hijacking
+- Deploy packet sniffing tools to capture all HTTP traffic
+- Filter and extract every POST /api/classify request containing:
+```json
+{
+  "model": "svm",
+  "email": "Dear Alice, your invoice is attached…"
+}
+```
+
+- Steal the entire email body in cleartext as it traverses the network
+Log timestamps, source IPs, and user patterns for profiling
+Build databases of intercepted emails for later exploitation
+
+**Active tampering**
+
+- Intercept the initial client request using proxy tools (e.g., Burp Suite, mitmproxy)
+- Forward the legitimate request to the server while maintaining the connection
+- Capture the server's JSON response:
+```json
+{
+  "label": "ham",
+  "confidence": 0.87
+}
+```
+
+- Modify the response payload on the fly to manipulate classification results:
+```json
+{
+  "label": "spam",
+  "confidence": 0.99
+}
+```
+- Calculate correct Content-Length headers to avoid detection
+- Replay the forged response so the client's st.markdown() renders a false "SPAM (99%)" verdict
+- Maintain persistent MITM position for continuous manipulation of all subsequent requests
+
+
+
+#### Consequences of MITM on Website
+
+**Confidentiality breach:** Any sensitive or private text pasted by the user (personal emails, business correspondence, financial documents) is captured in plaintext. Attackers can build comprehensive profiles of users' communication patterns and contacts. Intercepted data can be stored indefinitely, sold on dark web markets, or used for targeted attacks. Enables downstream phishing campaigns using legitimate email content as templates. Furthermore, it facilitates blackmail, extortion, or identity theft using compromised personal information
+
+
+**Integrity compromise:** Classification results become completely untrustworthy and manipulable. 
+
+Attackers can force legitimate mail to be marked "spam" causing:
+- Important emails to be deleted or ignored
+- Business communications to be missed
+- Critical notifications to go unread
+
+Dangerous/malicious mail can be marked "ham" causing:
+
+- Phishing emails to appear trustworthy
+- Malware-laden messages to bypass user suspicion
+- Spam campaigns to reach inboxes successfully
+
+#### Denial of Service (DoS/DDoS)
+
+Even without login or rate limits, the public API can be overwhelmed: A single attacker can script repeated `/api/classify` calls, using up CPU/memory and making the service unresponsive to real users. Also coordinated bots can flood the endpoint from many IPs, causing prolonged downtime and requiring scaling or WAF protection.
+
+As the website deployed on AWS, it is provided with some protection from AWS against DDoS attacks. However, there is still future work we can do to get better protection.
 
 
   
