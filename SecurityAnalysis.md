@@ -81,7 +81,7 @@ These mitigation methods, tuned based on real‑world usage data, provide a good
 
 ## Privacy Concerns
 
-As the application does not require user authentication and primarily processes spam emails without storing them, we do not consider privacy a critical concern at this stage. However, we recommend displaying a clear warning to users, advising them not to paste any sensitive or personal information into the website. For now, we rely on user discretion to avoid sharing private data. This reduces potential harm in the event of a man-in-the-middle (MITM) attack or data interception.
+As the application does not require user authentication and primarily processes spam emails without storing them, we do not consider privacy a critical concern at this stage. The system follows privacy-by-default principles by avoiding data retention, storing no user credentials, and discarding all input immediately after processing. However, we recommend displaying a clear warning to users, advising them not to paste any sensitive or personal information into the website. For now, we rely on user discretion to avoid sharing private data. This reduces potential harm in the event of a man-in-the-middle (MITM) attack or data interception.
 
 ## Integration and Future Expansion
 
