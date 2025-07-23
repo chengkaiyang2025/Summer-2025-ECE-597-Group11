@@ -20,10 +20,10 @@ The goal of this application is to provide a fast, lightweight tool for identify
 
 Key benefits of this system include:
 
-1. Stateless design, which reduces privacy liability by avoiding storage of any user data.
-2. Lightweight architecture, making it easy to integrate into firewalls or email pipelines.
-3. No data retention, minimizing compliance concerns around handling personal or sensitive content.
-4. Practical utility, as it helps raise awareness about spam and phishing risks through generated explanations.
+1. Stateless design: The system does not store any data between requests. Once an email is processed, it is immediately discarded, which reduces privacy liability by avoiding the storage of any user data.
+2. Lightweight architecture: The design is simple and does not rely on a database, user accounts, or persistent storage. This makes it easy to integrate into firewalls or email pipelines.
+3. No data retention: The application does not store or reuse any input in any form. This minimizes compliance concerns around handling personal or sensitive content.
+4. Practical utility: Due to its simplicity and modular structure, the system is easy to extend or embed into other platforms, such as firewalls, email systems, or browser-based tools.
 
 These features make the application suitable for broader deployment as a browser extension, firewall plugin, or email-scanning API, especially in environments where simplicity, speed, and privacy are prioritized.
 
