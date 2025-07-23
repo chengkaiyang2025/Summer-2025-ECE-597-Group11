@@ -47,12 +47,14 @@ Website
 
 ### Machine Learning Model Information Disclosure & Feedback Risk
 
-While the UI currently discloses the specific classifier family (e.g., Logistic Regression) and the top contributing words plus a numeric confidence score [Figure 2], the primary enabling factor for attack is the public endpoint access without rate limitation. Our effort to provide transparency, such as showing users why a message was labeled spam or ham (legitimate, non‑spam email), does improve trust and can educate users. However, the same explanations given (exact model name, precise confidence percentage, and ranked contributing tokens) provides attackers with rich feedback. By iteratively submitting modified emails and observing how individual token changes shift contribution rankings or changes the confidence score, an adversary can rapidly:
+While the Logistic Regression UI currently discloses the specific classifier family and the top contributing words plus a numeric confidence score [Figure 2], the primary enabling factor for attack is the public endpoint access without rate limitation. Our effort to provide transparency, such as showing users why a message was labeled spam or ham (legitimate, non‑spam email), does improve trust and can educate users. However, the same explanations given (exact model name, precise confidence percentage, and ranked contributing tokens) provides attackers with rich feedback. By iteratively submitting modified emails and observing how individual token changes shift contribution rankings or changes the confidence score, an adversary can rapidly:
 
 1. Learn which “spam” tokens have the highest positive weights.
 2. Inject “ham” tokens or benign filler phrases to dilute those weights.
 3. Obfuscate high‑impact spam tokens (e.g., spacing) and confirm success via rising confidence.
 4. Approximate the model’s decision boundary (model extraction) with far fewer queries than if only a binary label were returned.
+
+Other models like Naive Bayes, Random Forest, and SVM also face similar risks of model extraction due to the unrestricted public access. An attacker could query these models with a large number of inputs and observe the outputs, then use the input–output pairs to train a surrogate model. This allows them to learn the decision boundary and craft inputs specifically designed to bypass detection.
 
 To conclude, unlimited queries reduce the time to achieve reliable evasion from potentially thousands of probes (label‑only) to tens or low hundreds (rich explanations), significantly increasing the likelihood of successful large‑scale spam evasion. It's important to find the balance between transparency and security in this case.
 <p align="center">
