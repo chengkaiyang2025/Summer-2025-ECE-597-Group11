@@ -16,7 +16,7 @@ Our approach combines traditional threat modeling techniques targeting the websi
 
 ## System Overview
 
-The goal of this application is to provide a fast, lightweight tool for identifying potential spam emails using machine learning. Unlike traditional filtering tools, our system does not rely on user login, does not store data, and operates in a stateless manner.
+The goal of this application is to provide a fast, lightweight tool for identifying potential spam emails using machine learning. Unlike traditional filtering tools, our system does not rely on user login, does not store data, and operates in a stateless manner. 
 
 Key benefits of this system include:
 
@@ -25,7 +25,7 @@ Key benefits of this system include:
 3. No data retention: The application does not store or reuse any input in any form. This minimizes compliance concerns around handling personal or sensitive content.
 4. Practical utility: Due to its simplicity and modular structure, the system is easy to extend or embed into other platforms, such as firewalls, email systems, or browser-based tools.
 
-These features make the application suitable for broader deployment as a browser extension, firewall plugin, or email-scanning API, especially in environments where simplicity, speed, and privacy are prioritized.
+While the application is stateless on the server side, it temporarily stores check history in the user’s current browser session using ```st.session_state```. This data is not persisted and is cleared when the session ends. These features make the application suitable for broader deployment as a browser extension, firewall plugin, or email-scanning API, especially in environments where simplicity, speed, and privacy are prioritized.
 
 ### Architecture Diagram  
 <p align="center">
