@@ -2,7 +2,7 @@ import logging
 from enum import Enum
 
 from models.spam_models import PredictLogisticRegression, PredictNaiveBayes, PredictLogisticRegression_Version2, \
-    PredictRandomForrest
+    PredictRandomForrest, SVMModel
 from models.util.data_util import PredictResult
 
 #
@@ -14,7 +14,8 @@ MODEL_RF = '🌳Random Forest'
 #
 MODEL_CHOICES = [MODEL_LR, MODEL_NB,
 
-                 # MODEL_SVM,
+                 #
+                 MODEL_SVM,
                  MODEL_RF]
 AUTHOR_INFO = {
 
@@ -28,6 +29,11 @@ AUTHOR_INFO = {
         f"""
         For more details about **{MODEL_NB}** please click [here](https://github.com/chengkaiyang2025/Summer-2025-ECE-597-Group11/issues/18).
         """
+    ],
+    MODEL_SVM: [
+        f"""
+    For more details about **{MODEL_NB}** please click [here](https://github.com/chengkaiyang2025/Summer-2025-ECE-597-Group11/issues/18).
+    """
     ]
 
 
@@ -43,6 +49,7 @@ class ResponseService:
         self.p_rl_v2 = PredictLogisticRegression_Version2()
         self.p_nb = PredictNaiveBayes()
         self.p_rr = PredictRandomForrest()
+        self.p_svm = SVMModel()
         logging.info("Init ResponseService successfully")
     def response(self,model_selected:str, email_subject:str, email_body:str) -> ResponseMessage:
         if model_selected == MODEL_LR:
@@ -51,6 +58,10 @@ class ResponseService:
             assistant_response: PredictResult = self.p_nb.predict_email(email_body, email_subject)
         elif model_selected == MODEL_RF:
             assistant_response: PredictResult = self.p_rr.predict_email(email_body, email_subject)
+        elif model_selected == MODEL_SVM:
+            assistant_response: PredictResult = self.p_svm.predict_email(email_body, email_subject)
+            md_content_list = [f"The email is {assistant_response.predicted_label}"]
+            return ResponseMessage(md_content_list, assistant_response.get_image_path())
         else:
             return ResponseMessage(["Sorry the mad group 11 is still working on this model"])
 

@@ -1,7 +1,9 @@
-from models.spam_models import PredictLogisticRegression, PredictNaiveBayes, PredictLogisticRegression_Version2,PredictRandomForrest
+from models.spam_models import PredictLogisticRegression, PredictNaiveBayes, PredictLogisticRegression_Version2, \
+    PredictRandomForrest, SVMModel
 
 from response_generator import ResponseService, MODEL_LR, MODEL_NB
 p1 = PredictLogisticRegression()
+svm = SVMModel()
 p_nb = PredictNaiveBayes()
 p_lr_v2 = PredictLogisticRegression_Version2()
 prr = PredictRandomForrest()
@@ -51,5 +53,9 @@ def test_prr():
     email_text = email_subject + " " + email_body
 
     print(prr.predict_email(email_body, email_subject))
-
-test_prr()
+def test_svm():
+    email_subject = "Important Update"
+    email_body = "Click here to verify your account immediately."
+    email_text = email_subject + " " + email_body
+    print(svm.predict_email(email_body, email_subject))
+test_svm()
