@@ -121,6 +121,25 @@ class PredictRandomForrest(PredictModel):
 
             ]
         )
+class SVMModel(PredictModel):
+    def __init__(self):
+        self.model = joblib.load(os.path.join(get_pkl_path(), f'svm_model_kai.pkl'))
+        self.vectorizer = joblib.load(os.path.join(get_pkl_path(), f'svm_vec_bow_kai.pkl'))
+    def predict_email(self, spam_content,subject) -> PredictResult:
+        email_text = subject + " " + spam_content
+
+        # Transform and predict
+        X_input = self.vectorizer.transform([email_text])
+        prediction = self.model.predict(X_input)
+        # confidence = self.model.predict_proba(X_input)
+        logging.info(f"The label is {prediction[0]}")
+        return PredictResult(
+            predicted_label=prediction[0],
+            confidence=1.0,
+            explain_info=[
+
+            ]
+        )
 class PredictLogisticRegression(PredictModel):
 
     def __init__(self):
