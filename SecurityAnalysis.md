@@ -67,7 +67,9 @@ We propose the following three mitigations that most effectively achieve a trade
 
 **Rate Limiting & Monitoring**
 
-For each IP address, implement request quotas (e.g., limit requests per 5 minutes to 30) and log anomalies such as unusually high volume from the same IP address. Consider temporarily blocking an IP if abnormal usage is repeatedly found in the logs. This directly cuts an attacker’s attempts and slows the process of crafting evasions while having minimal effect on normal users, whose request volume should remain below the limits.
+For each IP address, implement request quotas (e.g., limit requests per 5 minutes to 30) and log anomalies such as unusually high volume from the same IP address. Consider temporarily blocking an IP if abnormal usage is repeatedly found in the logs. This directly cuts an attacker’s attempts and slows the process of crafting evasions while having minimal effect on normal users, whose request volume should remain below the limits. 
+
+To further reduce automated abuse, especially bot-driven model probing, integrate a CAPTCHA challenge at the submission interface. CAPTCHA helps distinguish human users from automated scripts and deters large-scale attacks. Together, rate limiting and CAPTCHA reduce the risk of adversarial misuse while preserving user access and system transparency.
 
 **Output Minimization**
 
@@ -81,7 +83,7 @@ These mitigation methods, tuned based on real‑world usage data, provide a good
 
 ## Privacy Concerns
 
-As the application does not require user authentication and primarily processes spam emails without storing them, we do not consider privacy a critical concern at this stage. The system follows privacy-by-default principles by avoiding data retention, storing no user credentials, and discarding all input immediately after processing. However, we recommend displaying a clear warning to users, advising them not to paste any sensitive or personal information into the website. For now, we rely on user discretion to avoid sharing private data. This reduces potential harm in the event of a man-in-the-middle (MITM) attack or data interception.
+As the application does not require user authentication and primarily processes spam emails without storing them, we do not consider privacy a critical concern at this stage. However, we recommend displaying a clear warning to users, advising them not to paste any sensitive or personal information into the website. For now, we rely on user discretion to avoid sharing private data. This reduces potential harm in the event of a man-in-the-middle (MITM) attack or data interception.
 
 ## Integration and Future Expansion
 
@@ -92,10 +94,8 @@ Privacy and data handling will not be our responsibility, but rather that of the
 In firewall or email system integrations, the API will be expected to provide fast and reliable responses. This becomes a technical concern, especially under high-volume traffic or real-time filtering. Ensuring high accuracy, low latency, and scalability will be important challenges moving forward.
 
 ## Conclusion
-- **Summary of Risks**
 
-Our team identifies two major vulnerabilities threatening this application, MITM and Evasion, one targeting on traditional website and the other on machine learning models. 
- 
-- **Next Steps**  
-implementing fixes
+Despite its lightweight and privacy-preserving architecture, the UVIC Spam Detector faces several key security risks that could compromise its effectiveness and integrity if left unaddressed. These risks includes evasion and model extraction attacks due to rich feedback, lack of rate limiting, absence of HTTPS, and potential model staleness. They span both the web application layer and the underlying machine learning models. Our analysis highlights the difficulty of balancing transparency, speed, and security in open-access machine learning systems. By adopting targeted mitigations and planning for broader integration, the system can remain resilient while staying true to its original goals.
+
+To strengthen the UVIC Spam Detector while preserving its core advantages, we recommend several targeted improvements. First, secure the web interface by enforcing HTTPS and adding rate limiting or CAPTCHA to prevent abuse. Second, reduce feedback granularity by limiting confidence scores and token-level explanations to hinder evasion and model extraction. Third, improve model robustness through adversarial training, confidence smoothing, and token obfuscation detection. Finally, implement lightweight model management practices and explore deployment options such as a secure API, browser extension, or firewall plugin to expand the system’s utility in real-world environments.
 
