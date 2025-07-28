@@ -40,12 +40,93 @@ A user (no login required) pastes raw email text into the web form, after which 
 
 ## Security Analysis
 
-Website
+### Web Application Vulnerabilities
+
+#### Man‑in‑the‑Middle (MITM)
+
+Because the web UI and its JSON API are served over plain HTTP (no TLS), an attacker who controls—or is on the path of—the user's network (e.g. a public Wi‑Fi, compromised router, or via ARP/DNS spoofing) can:
+
+**Passive interception**
+
+- Position themselves between the user and server using techniques like ARP poisoning, rogue access points, or DNS hijacking
+- Deploy packet sniffing tools to capture all HTTP traffic
+- Filter and extract every POST /api/classify request containing:
+```json
+{
+  "model": "svm",
+  "email": "Dear Alice, your invoice is attached…"
+}
+```
+
+- Steal the entire email body in cleartext as it traverses the network
+Log timestamps, source IPs, and user patterns for profiling
+Build databases of intercepted emails for later exploitation
+
+**Active tampering**
+
+- Intercept the initial client request using proxy tools (e.g., Burp Suite, mitmproxy)
+- Forward the legitimate request to the server while maintaining the connection
+- Capture the server's JSON response:
+```json
+{
+  "label": "ham",
+  "confidence": 0.87
+}
+```
+
+- Modify the response payload on the fly to manipulate classification results:
+```json
+{
+  "label": "spam",
+  "confidence": 0.99
+}
+```
+- Calculate correct Content-Length headers to avoid detection
+- Replay the forged response so the client's st.markdown() renders a false "SPAM (99%)" verdict
+- Maintain persistent MITM position for continuous manipulation of all subsequent requests
+
+#### Consequences of MITM on Website
+
+**Confidentiality Breach:** 
+
+Any sensitive or private text pasted by the user (personal emails, business correspondence, financial documents) is captured in plaintext. Attackers can build comprehensive profiles of users' communication patterns and contacts. Intercepted data can be stored indefinitely, sold on dark web markets, or used for targeted attacks. Enables downstream phishing campaigns using legitimate email content as templates. Furthermore, it facilitates blackmail, extortion, or identity theft using compromised personal information
+
+**Integrity Compromise:** 
+
+Classification results become completely untrustworthy and manipulable. 
+
+Attackers can force legitimate mail to be marked "spam" causing:
+- Important emails to be deleted or ignored
+- Business communications to be missed
+- Critical notifications to go unread
+
+Dangerous/malicious mail can be marked "ham" causing:
+
+- Phishing emails to appear trustworthy
+- Malware-laden messages to bypass user suspicion
+- Spam campaigns to reach inboxes successfully
+
+#### Mitigations
+
+**Transport Layer Security (TLS)**
+The most effective defense against MITM attacks is to serve both the web interface and API over HTTPS. TLS encryption ensures that all communication, including email content and classification results, is protected from passive interception and active tampering. This should be considered a baseline deployment requirement, and it aligns with the privacy-by-default principle by securing user data without requiring user action.
+
+**Secure Defaults and Browser Hardening**
+The server should enforce HTTP Strict Transport Security (HSTS) and automatically redirect all HTTP requests to HTTPS. These configurations prevent downgrade attacks and ensure that users always interact with the secure version of the site. Other headers such as Content-Security-Policy and X-Content-Type-Options can also enhance browser-side protection against injection and manipulation.
+
+**Response Integrity**
+For future deployments involving browser extensions, API integrations, or proxy-aware clients, we recommend response authentication techniques such as digital signatures or HMAC-based verification. This would allow clients to validate that API responses have not been modified in transit, even when cached or routed through untrusted layers. Although it is not needed in the current prototype, this is a forward-looking security measure for any extended deployments.
+
+#### Denial of Service (DoS/DDoS)
+
+Even without login or rate limits, the public API can be overwhelmed: A single attacker can script repeated `/api/classify` calls, using up CPU/memory and making the service unresponsive to real users. Also coordinated bots can flood the endpoint from many IPs, causing prolonged downtime and requiring scaling or WAF protection.
+
+As the website is deployed on AWS, it benefits from some protection that users can enable against large-scale DDoS attacks. However, abuse of the public interface remains a concern. Mitigation strategies such as rate limiting, CAPTCHA, and traffic throttling are more thoroughly discussed in the following Machine Learning section, they are also directly applicable to the web interface and should be considered as part of a unified defense strategy.
 
 
-  
+### Machine Learning Model Vulnerabilities
 
-### Machine Learning Model Information Disclosure & Feedback Risk
+#### Evasion and Model Extraction 
 
 While the Logistic Regression UI currently discloses the specific classifier family and the top contributing words plus a numeric confidence score [Figure 2], the primary enabling factor for attack is the public endpoint access without rate limitation. Our effort to provide transparency, such as showing users why a message was labeled spam or ham (legitimate, non‑spam email), does improve trust and can educate users. However, the same explanations given (exact model name, precise confidence percentage, and ranked contributing tokens) provides attackers with rich feedback. By iteratively submitting modified emails and observing how individual token changes shift contribution rankings or changes the confidence score, an adversary can rapidly:
 
@@ -61,7 +142,7 @@ To conclude, unlimited queries reduce the time to achieve reliable evasion from 
 <img src="Explaination_provided.png" alt="Explaination Provided" width="600"/>
 </p>
 
-### Mitigations & Transparency Trade‑Off
+#### Mitigations & Transparency Trade‑Off
 
 We propose the following three mitigations that most effectively achieve a trade‑off between security and transparency.
 
