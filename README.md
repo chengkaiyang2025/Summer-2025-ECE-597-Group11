@@ -1,16 +1,14 @@
 # SpamEmailClassifier
 
-## Commit
-Please don't commit on main branch, you can commit on dev branch.
-## Online demo
+## Description
+This is a student project that implements an online spam email classifier.  
+The project features a ChatGPT-style user interface and supports multiple traditional machine learning models, including logistic regression, SVM, and random forest, for spam email classification.  
+A screenshot of the online interface is shown below.
+![Online Demo Screenshot](images/demo.png)
 
+## Online Demo
 http://47.121.130.34:5000/
 
-## Description
-This is a spam email classifier project.
-## Useful link
-
-1. Click [here](https://docs.google.com/document/d/1LR34J17Q-KZ3z7-L2V87KyQNWWa7TxWT/edit) to upload your worklog.
 ## Attention
-- Please don't upload dataset or sensitive data to this repo, thank you.
-- Please Do not commit on main branch, thank you.
+- Please do not upload datasets or any sensitive data to this repository.
+- Please do not commit directly to the `main` branch.
