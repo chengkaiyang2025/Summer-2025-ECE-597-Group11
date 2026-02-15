@@ -8,7 +8,7 @@ A screenshot of the online interface is shown below.
 ![Online Demo Screenshot](demo.png)
 
 ## Online Demo
-http://47.121.130.34:5000/
+https://uvicspamdetector.zeabur.app/
 
 ## Attention
 - Please do not upload datasets or any sensitive data to this repository.
